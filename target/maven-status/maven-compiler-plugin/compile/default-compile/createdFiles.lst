@@ -1,0 +1,6 @@
+banking_modal\BuildAccountDetails.class
+database_modal\TableConnector.class
+banking_modal\Service.class
+banking_modal\Authorization.class
+banking_modal\CreateCustomerAccount.class
+banking_modal\Account.class

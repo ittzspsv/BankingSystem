@@ -1,22 +1,24 @@
 package database_modal;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class TableConnector
 {
+    private static TableConnector instance;
     private Connection connection;
     private final String url = "jdbc:sqlite:storage/banking.db";
 
-    public TableConnector()
+    private TableConnector()
     {
         try
         {
             connection = DriverManager.getConnection(url);
-            System.out.println("Connected to Database");
+            connection.setAutoCommit(false);
+
+            try (Statement stmt = connection.createStatement())
+            {
+                stmt.execute("PRAGMA journal_mode=WAL;");
+            }
         }
         catch (SQLException e)
         {
@@ -24,12 +26,24 @@ public class TableConnector
         }
     }
 
-    //Helper function to execute DDL Commands
-    public boolean execute(String query)
+    public static synchronized TableConnector getInstance()
     {
-        try (Statement stmt = connection.createStatement())
+        if (instance == null)
         {
-            stmt.execute(query);
+            instance = new TableConnector();
+        }
+        return instance;
+    }
+
+    public boolean execute(String query, Object... params)
+    {
+        try (PreparedStatement ps = connection.prepareStatement(query))
+        {
+            for (int i = 0; i < params.length; i++)
+            {
+                ps.setObject(i + 1, params[i]);
+            }
+            ps.executeUpdate();
             return true;
         }
         catch (SQLException e)
@@ -39,13 +53,16 @@ public class TableConnector
         }
     }
 
-    //Helper function to execute DML Commands
-    public ResultSet executeQuery(String query)
+    public ResultSet executeQuery(String query, Object... params)
     {
         try
         {
-            Statement stmt = connection.createStatement();
-            return stmt.executeQuery(query);
+            PreparedStatement ps = connection.prepareStatement(query);
+            for (int i = 0; i < params.length; i++)
+            {
+                ps.setObject(i + 1, params[i]);
+            }
+            return ps.executeQuery();
         }
         catch (SQLException e)
         {
@@ -54,11 +71,55 @@ public class TableConnector
         }
     }
 
+    public void commit()
+    {
+        try
+        {
+            connection.commit();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void rollback()
+    {
+        try
+        {
+            connection.rollback();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public int getLastInsertId()
+    {
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT last_insert_rowid() AS id"))
+        {
+            if (rs.next())
+            {
+                return rs.getInt("id");
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     public void close()
     {
         try
         {
-            if (connection != null) connection.close();
+            if (connection != null)
+            {
+                connection.close();
+            }
         }
         catch (SQLException e)
         {
