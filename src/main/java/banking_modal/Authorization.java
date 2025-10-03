@@ -144,6 +144,41 @@ public class Authorization
         }
     }
 
+    public String CreateCustomerAccount(String name,String dob,String email,String phoneNumber,String gender,String password) 
+    {
+        TableConnector conn = TableConnector.getInstance();
+        try 
+        {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes("UTF-8"));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            String hashedPassword = hexString.toString();
+
+            conn.execute(
+                "INSERT INTO Customers (Name, DateOfBirth, Email, PhoneNumber, Gender, Password) VALUES (?, ?, ?, ?, ?, ?)",
+                name, dob, email, phoneNumber, gender, hashedPassword
+            );
+
+            conn.commit();
+
+            int customerId = conn.getLastInsertId();
+
+            return String.valueOf(customerId);
+
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+            conn.rollback();
+            return "0";
+        }
+    }
+
     public boolean Logout(String session_id)
     {
         TableConnector conn = TableConnector.getInstance();

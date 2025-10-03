@@ -21,31 +21,70 @@ public class Service
                 System.out.println("        Welcome to MyBank         ");
                 System.out.println("==================================");
                 System.out.println("1. Login");
-                System.out.println("2. Exit");
+                System.out.println("2. Sign Up");
+                System.out.println("3. Exit");
                 System.out.print("Select an option: ");
                 int choice = Integer.parseInt(scanner.nextLine());
 
-                if (choice == 1)
+                switch (choice)
                 {
-                    if (loginFlow())
-                    {
-                        accountMenu();
-                    }
-                }
-                else if (choice == 2)
-                {
-                    System.out.println("Thank you for visiting MyBank!");
-                    break;
-                }
-                else
-                {
-                    System.out.println("Invalid choice! Try again.");
+                    case 1:
+                        if (loginFlow())
+                        {
+                            accountMenu();
+                        }
+                        break;
+                    case 2:
+                        signUpFlow();
+                        break;
+                    case 3:
+                        System.out.println("Thank you for visiting MyBank!");
+                        return;
+                    default:
+                        System.out.println("Invalid choice! Try again.");
                 }
             }
         }
         finally
         {
             conn.close();
+        }
+    }
+
+    private static void signUpFlow()
+    {
+        System.out.println();
+        System.out.println("==================================");
+        System.out.println("           SIGN UP MENU           ");
+        System.out.println("==================================");
+
+        System.out.print("Enter Name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter Date of Birth (YYYY-MM-DD): ");
+        String dob = scanner.nextLine();
+        System.out.print("Enter Email: ");
+        String email = scanner.nextLine();
+        System.out.print("Enter Phone Number: ");
+        String phone = scanner.nextLine();
+        System.out.print("Enter Gender: ");
+        String gender = scanner.nextLine();
+        System.out.print("Enter Password: ");
+        String password = scanner.nextLine();
+
+        String customerId = auth.CreateCustomerAccount(name, dob, email, phone, gender, password);
+
+        if (!customerId.equals("0"))
+        {
+            System.out.println("Account created successfully! Customer ID: " + customerId);
+
+            // Automatically create a Primary account
+            BuildAccountDetails builder = new BuildAccountDetails(Integer.parseInt(customerId));
+            account.CreateAccount(builder, "Primary");
+            System.out.println("Primary bank account created successfully!");
+        }
+        else
+        {
+            System.out.println("Account creation failed. Please try again.");
         }
     }
 

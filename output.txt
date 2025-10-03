@@ -1,0 +1,83 @@
+==================================
+        Welcome to MyBank         
+==================================
+1. Login
+2. Sign Up
+3. Exit
+Select an option: 1
+
+==================================
+           LOGIN MENU             
+==================================
+Enter Account ID: 58968176
+Enter Password: Shree
+Login failed! Invalid credentials.
+==================================
+        Welcome to MyBank         
+==================================
+1. Login
+2. Sign Up
+3. Exit
+Select an option: 1
+
+==================================
+           LOGIN MENU             
+==================================
+Enter Account ID: 875192003
+Enter Password: Shree
+Login successful! Customer ID: 875192003
+==================================
+        Account Menu              
+==================================
+
+1. Create New Account
+2. Deposit
+3. Withdraw
+4. Transfer
+5. Logout
+Select an option: 2
+Enter amount to deposit: 10000
+Deposit successful! Amount: 10000.0
+==================================
+        Account Menu              
+==================================
+
+1. Create New Account
+2. Deposit
+3. Withdraw
+4. Transfer
+5. Logout
+Select an option: 3
+Enter amount to withdraw: 4000
+Withdrawal successful! Amount: 4000.0
+==================================
+        Account Menu              
+==================================
+
+1. Create New Account
+2. Deposit
+3. Withdraw
+4. Transfer
+5. Logout
+Select an option: 4
+Enter target account number: 76733032
+Enter amount to transfer: 5401
+Transfer successful! Amount: 5401.0
+==================================
+        Account Menu              
+==================================
+
+1. Create New Account
+2. Deposit
+3. Withdraw
+4. Transfer
+5. Logout
+Select an option: 5
+Logged out successfully.
+==================================
+        Welcome to MyBank         
+==================================
+1. Login
+2. Sign Up
+3. Exit
+Select an option: 
